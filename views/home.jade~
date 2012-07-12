@@ -1,0 +1,43 @@
+- if (!everyauth.loggedIn)
+  center
+    #social(style='float:left')
+    #fb-login.fb_button(style='float:left;background-position: left -188px')
+      a.fb_button_medium(href='/auth/facebook')
+        span#fb_login_text.fb_button_text
+          Connect with Facebook
+    #twitter-login
+      a(href='/auth/twitter', style='float:left;border: 0px')
+        img(style='border: 0px', src='https://si0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png')
+    #google-login
+      a(href='/auth/google', style='float:left;border: 0px')
+        img(style='border: 0px', src='https://www.google.com/favicon.ico')
+- else
+    div.nav.navbar-fixed-top
+      div.navbar-inner
+        div.container
+          ul.nav.nav-pills
+            li
+              input#start-button.btn-inverse(type='button') Angarag
+            li
+              a.btn-primary(href='#') Blue = Private message
+            li
+              a.btn-success(href='#') Green = Your message
+            li
+              a.btn-inverse(href='#') Public message
+            li
+              a.btn-warning(href='#') Yellow = System message
+            li.active
+              a.btn-danger(href='/logout') Log out
+    div.row
+      h3.span9 Messages
+      h3.span3 User List
+    div.row
+      div.span9#messages
+      div#user_list.span3
+    div.nav.navbar-fixed-bottom
+      div.navbar-inner
+        div.container
+          div.chat_box.row
+            input#autocomplete.span3.search-query(type='text',title='To whom',placeholder="Search")
+            input#text-input.span6.search-query(type='text',title='Message',placeholder="Type here")
+            button#send-button.btn-inverse(type='submit',title='Send button') Send

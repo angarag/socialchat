@@ -1,0 +1,15 @@
+!!! 5
+html
+  head
+    title= typeof(title) !== 'undefined' ? title : "Social Chat"
+    script(src='http://static.ak.fbcdn.net/connect/en_US/core.js')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+    script(src='/nowjs/now.js')
+    script(src='js/main.js')
+  body
+    center
+      h1 Chat via
+      div#main
+        != body
+

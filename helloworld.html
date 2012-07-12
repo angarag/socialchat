@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>nowjs test</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script src="/nowjs/now.js"></script>
+<script>
+$(document).ready(function(){
+  $("#send-button").attr("disabled",true);
+  $("#text-input").attr("disabled",true);
+
+  now.receivePrevMessage = function(messages){
+         $("#messages").append(messages);
+  }
+  now.receiveUserList = function(ul){
+  var head='<span>User List</span>';
+         $("#user_list").append(head);
+         $("#user_list").append(ul);
+  }
+
+  now.receiveMessage = function(prename, message,color){
+     var sys_time = new Date();
+     var ognoo = sys_time.getHours()+':'+sys_time.getMinutes()+':'+sys_time.getSeconds();
+     var name = ognoo+'   '+prename;
+     if(color==7){
+         $("#messages").append("<br style='color:#5E2605'>" + name + message+"");
+         now.updatePrevMessages("<br style='color:#5E2605'>" + name + message+"");
+     }else
+     if(color==-1)
+         $("#messages").append("<br style='color: #0000FF; font-size: 12pt'>" + name + ": "+ message+"");
+     else if(color==1){
+         $("#messages").append("<br>" + name + ": " + message+"");
+         now.updatePrevMessages("<br>" + name + ": " + message+"");
+     }
+     else if(color==0)
+         $("#messages").append("<br style='color: #00FF00; font-size: 12pt'>" + name + ": "+ message+"");
+  }
+
+  now.countUsers = function(counter){
+    $("#send-button").removeAttr("disabled");
+    $("#text-input").removeAttr("disabled");
+    $("#start-button").attr("disabled",true);
+    $("#start-button").val('Online Users:' +counter);
+  }
+
+  $("#send-button").click(function(){
+    if($('#autocomplete').val()=='To whom? it is public as default')
+      $('#autocomplete').val("");
+    now.distributeMessage($('#autocomplete').val(),$("#text-input").val());
+    $("#text-input").val("");
+  });
+
+  $("#start-button").click(function(){
+    $("#send-button").removeAttr("disabled");
+    $("#text-input").removeAttr("disabled");
+    $("#start-button").val('Chat started');
+    $("#start-button").attr("disabled",true);
+    now.startChat();    
+  });
+
+  $("#log_out").click(function(){
+    console.log('logout clicked');
+   window.location.href='/logout';
+   window.location.replace('/logout');
+  });
+	
+//Autocomplete
+
+	$('#autocomplete').keyup(function autocomplete(event) {
+		//checking if the delete key was pressed
+		if(event.which == 8) {
+			event.preventDefault();
+			return;
+		} 
+  		console.log('keyup -> getGuess');
+		now.getGuess($('#autocomplete').val());
+	});
+
+now.receiveGuess = function(guess) {
+	var val = $('#autocomplete').val();
+//	var	subGuess = guess.substring(val.length);
+  if(guess) {
+    console.log('receiveGuess -> value %s',guess);
+    $('#autocomplete').val(val + guess);
+    $('#autocomplete')[0].selectionStart = val.length;
+    $('#autocomplete')[0].selectionEnd = guess.length + val.length;
+  }
+};
+//DefaultText for inputs
+$(".defaultText").focus(function(srcc)
+    {
+        if ($(this).val() == $(this)[0].title)
+        {
+            $(this).removeClass("defaultTextActive");
+            $(this).val("");
+        }
+    });
+    
+    $(".defaultText").blur(function()
+    {
+        if ($(this).val() == "")
+        {
+            $(this).addClass("defaultTextActive");
+            $(this).val($(this)[0].title);
+        }
+    });
+    
+    $(".defaultText").blur();       
+
+//  now.prevmsgs = $("#messages").val();
+//  alert(now.name);
+  setTimeout(function(){
+      console.log(this.now.name);
+  }, 500) 
+});
+
+</script>
+<style type="text/css"> 
+
+body{
+width: 100%;
+height: 100%;
+margin: 0;
+padding: 0;
+overflow: hidden;
+background: #fff url('/img.png') no-repeat center top;
+}
+.chat_box{
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  float: right;
+  left: 0px;}
+.auto_complete{
+  width: 30%;
+}
+.message_box{
+  width: 50%;
+}
+.send{
+  width: 50%;
+}
+.info{
+border:2px solid #a1a1a1;
+padding:1px 5px; 
+width:150px;
+border-radius:5px;
+-moz-border-radius:5px; /* Firefox 3.6 and earlier */
+}
+.button {
+    border: 2px solid #a1a1a1;
+    background: #ccf;
+}
+.button:hover {
+  width: 200px;
+    border: 1px solid #f00;
+    background: #eef;
+}
+input{
+font-size:  100%;
+}
+#autocomplete{
+	width: 20%;
+	float: left;
+        height: 40px;
+}
+#send-button{
+	width: 19%;
+	float: left;
+        height: 40px;
+}
+#text-input{
+	width: 60%;
+	float: left;
+        height: 40px;
+}
+#user_list {
+ position:absolute;
+ top:100;
+ right:0;
+ width:100px;
+}
+#messages {
+ position:absolute;
+ top:300;
+ left:0;
+ width:500px;
+}
+#header {
+ position:relative;
+}
+</style>
+<style media="screen" type="text/css">
+    .defaultText { width: 300px; }
+    .defaultTextActive { color: #a1a1a1; font-style: italic; }
+</style>
+</head>
+
+<body>
+<div id="fb-root"></div>
+<div id="dialog" title="Basic dialog" style="display:none">
+Connect with Facebook
+</div>
+<div id="account-info"></div>
+<input type="hidden" value="Mars" id="myname">
+<div class="subnav">
+    <ul class="nav nav-pills">
+	<li><input class="info" type="button" value="Click to start chatting or load previous conversations" id="start-button"></li>
+      <li class="active"><a href="#global">Global styles</a></li>
+      <li><a href="#">Blue = Private message</a></li>
+      <li><a href="#">Green = Your message</a></li>
+      <li><a href="#">Black = Public message</a></li>
+      <li><a href="#">Brown = System message</a></li>
+      <li><a href="/logout">Log out</a></li>
+    </ul>
+  </div>
+<div id="header">
+<input class="info" type="button" value="Click to start chatting or load previous conversations" id="start-button">
+<span class="info" style='color:#0000FF'>Blue = Private message</span>
+<span class="info" style='color:#00FF00'>Green = Your message</span>
+<span class="info" >Black = Public message</span>
+<span class="info" style='color:#5E2605' >Brown = System message</span>
+<input class="info" type="button" value="Log Out" id="log_out">
+</div>
+  <div id="messages"></div>
+  <div id="user_list"></div>
+  <div class="chat_box">
+  <input class="defaultText" title="To whom? it is public as default" id="autocomplete" class="auto_complete" type="text">
+  <input class="defaultText" title="Here message" type="text" class="message_box" id="text-input">
+  <input type="button" class="button" value="Send" id="send-button">
+  </div>
+</body>
+</html>
