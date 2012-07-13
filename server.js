@@ -15,6 +15,11 @@ var server = express.createServer();
    'javascripts/easel.js',
    'javascripts/script.js'
 ];
+//Init Nowjs
+var nowjs = require("now");
+var everyone = nowjs.initialize(app); //Main 
+var post_everyone = nowjs.getGroup('everyone');
+var group = nowjs.getGroup('everyone');
 //Facebook connection
 var everyauth = require('./index');
 everyauth.debug = true;
@@ -194,11 +199,6 @@ app.get('/logout', function(req, res){
 everyauth.helpExpress(app);
 app.listen(process.env['app_port'] || 3000);
 
-//Init Nowjs
-var nowjs = require("now");
-var everyone = nowjs.initialize(app); //Main 
-var post_everyone = nowjs.getGroup('everyone');
-var group = nowjs.getGroup('everyone');
 
 //Handling connect and disconnect
 everyone.on('leave', function() { 
