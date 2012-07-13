@@ -128,9 +128,7 @@ app.configure( function () {
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router,function(){
-	console.log('route callback:');
-});
+  app.use(app.router);
   app.use(lessMiddleware({
     src      : __dirname + "/public",
     compress : true
