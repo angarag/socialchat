@@ -2,6 +2,7 @@
   "name": "socialchat",
   "description": "Chat with your social accounts",
   "version": "0.1.0-2",
+  "node":"0.8.1",
   "author": {
     "name": "Mars Inc.",
     "email": "mars0411@gmail.com"
