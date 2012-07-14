@@ -137,7 +137,7 @@ app.configure( function () {
   app.use(express.static(__dirname + '/public'));
 });
   //Init Nowjs
-  everyone = nowjs.initialize(app); //Main 
+  everyone = nowjs.initialize(app,{socketio: {transports: ["xhr-polling"]}}); //Main 
   var post_everyone = nowjs.getGroup('everyone');
   var group = nowjs.getGroup('everyone');
 
