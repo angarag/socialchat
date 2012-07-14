@@ -115,7 +115,7 @@ var app = express.createServer(
     express.bodyParser()
   , express.cookieParser()
   , express.session({ secret: 'htuayreve'})
-  , everyauth.middleware()
+//  , everyauth.middleware()
 );
 app.configure( function () {
   app.set('views', __dirname + '/views');
