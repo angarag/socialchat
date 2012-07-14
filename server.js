@@ -136,6 +136,70 @@ app.configure( function () {
   app.use(express.compiler({ src: __dirname + '/public/stylesheets', enable: ['less'] }));
   app.use(express.static(__dirname + '/public'));
 });
+//Routings
+app.get('/', function(req, res){
+   if(!req.user)
+	res.redirect('/auth');
+   else{
+       everyone.setUser(req.user);
+	//res.end(html);
+       res.render('home');
+   }
+})
+
+app.get('/auth', function(req, res){
+   console.log('Routing auth');
+   if(!req.user)
+        res.render('home');
+   else{
+       everyone.setUser(req.user);
+//	res.end(html);
+       res.render('home');
+   }
+})
+
+app.get('/chat', function(req, res){
+   console.log('Routing chat');
+   if(!req.user)
+	res.redirect('/auth');
+   else{
+       everyone.setUser(req.user);
+//	res.end(html);
+       res.render('home');
+   }
+})
+
+app.get('/error', function(req, res){
+	res.send('Error');
+})
+
+app.get('/gplus/gplus.png', function(req, res){
+        console.log('gplus');
+	res.redirect('/images/gplus.png');
+})
+//app.get('/css/main.js', function(req, res){
+//        console.log('main.js');
+//	res.redirect('/css/main.js');
+//})
+
+app.get('/logout', function(req, res){
+   console.log('Routing logout');
+   if(!req.user){
+       console.log('user not existing');
+	res.redirect('/');}
+   else{
+       console.log('user deleted');
+       everyone.logOut();
+       res.redirect('/');
+   }
+})
+
+//server.listen(3000,"laruche.local");
+everyauth.helpExpress(app);
+app.listen(process.env['app_port'] || 3000, function (){
+  console.log('listen event triggered.');
+});
+
   //Init Nowjs
   everyone = nowjs.initialize(app,{socketio: {transports: ["xhr-polling"]}}); //Main 
   var post_everyone = nowjs.getGroup('everyone');
@@ -171,7 +235,8 @@ app.configure( function () {
   everyone.on('connect', function() { 
     console.log('Hiring connect');
     this.now.receivePrevMessage(lastmsgs.toString());   
-    trie.addWord(rootVert, this.now.name);
+    if(this.now.name)
+     trie.addWord(rootVert, this.now.name);
     if(this.user.clientId){
       everyone.addUser(this.user.clientId);
       users[this.now.name] = this.user.clientId;
@@ -278,69 +343,6 @@ app.configure( function () {
     console.log('%s getGuess -> receiveGuess %j',val,guesses[0]);
     this.now.receiveGuess(guesses[0]);
   };
-
-//Routings
-app.get('/', function(req, res){
-   if(!req.user)
-	res.redirect('/auth');
-   else{
-       everyone.setUser(req.user);
-	//res.end(html);
-       res.render('home');
-   }
-})
-
-app.get('/auth', function(req, res){
-   console.log('Routing auth');
-   if(!req.user)
-        res.render('home');
-   else{
-       everyone.setUser(req.user);
-	res.end(html);
-   }
-})
-
-app.get('/chat', function(req, res){
-   console.log('Routing chat');
-   if(!req.user)
-	res.redirect('/auth');
-   else{
-       everyone.setUser(req.user);
-	res.end(html);
-   }
-})
-
-app.get('/error', function(req, res){
-	res.send('Error');
-})
-
-app.get('/gplus/gplus.png', function(req, res){
-        console.log('gplus');
-	res.redirect('/images/gplus.png');
-})
-//app.get('/css/main.js', function(req, res){
-//        console.log('main.js');
-//	res.redirect('/css/main.js');
-//})
-
-app.get('/logout', function(req, res){
-   console.log('Routing logout');
-   if(!req.user){
-       console.log('user not existing');
-	res.redirect('/');}
-   else{
-       console.log('user deleted');
-       everyone.logOut();
-       res.redirect('/');
-   }
-})
-
-//server.listen(3000,"laruche.local");
-everyauth.helpExpress(app);
-app.listen(process.env['app_port'] || 3000, function (){
-  console.log('listen event triggered.');
-});
-
 
 
  function Trie(vertex) {
