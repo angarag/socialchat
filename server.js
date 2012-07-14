@@ -25,7 +25,7 @@ everyauth.everymodule
     callback(null, usersById[id]);
   });
 
-var connect = require('connect');
+//var connect = require('connect');
 var usersById = {};
 var nextUserId = 0;
 var allmsg="";
@@ -115,13 +115,14 @@ var app = express.createServer(
     express.bodyParser()
   , express.cookieParser()
   , express.session({ secret: 'htuayreve'})
-//  , everyauth.middleware()
+  , everyauth.middleware()
 );
 app.configure( function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(app.router);
   app.use(lessMiddleware({
     src      : __dirname + "/public",
     compress : true
