@@ -170,15 +170,6 @@ app.get('/error', function(req, res){
 	res.send('Error');
 })
 
-//app.get('/gplus/gplus.png', function(req, res){
-//        console.log('gplus');
-	//res.redirect('/images/gplus.png');
-//})
-//app.get('/css/main.js', function(req, res){
-//        console.log('main.js');
-//	res.redirect('/css/main.js');
-//})
-
 app.get('/logout', function(req, res){
    console.log('Routing logout');
    if(!req.user){

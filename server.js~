@@ -222,7 +222,7 @@ app.listen(process.env['app_port'] || 3000, function (){
       users[this.now.name] = null;
     }
      everyone.count(function (ct) {
-        everyone.now.countUsers(ct);
+        everyone.now.countUsers(get_unique_usernames().length);
      });
      console.log('this.now  = %j',this.now)
      delete this.now;
