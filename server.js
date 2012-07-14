@@ -30,7 +30,6 @@ var usersById = {};
 var nextUserId = 0;
 var allmsg="";
 var lastmsgs=[];
-var counter=0;
 var users = {}; //To store the client id for user name (assume name=unique)
 var cusers = {}; //To store the user name for client id (assume clientId=name)
 
@@ -142,7 +141,6 @@ app.get('/', function(req, res){
 	res.redirect('/auth');
    else{
        everyone.setUser(req.user);
-	//res.end(html);
        res.render('home');
    }
 })
@@ -153,7 +151,6 @@ app.get('/auth', function(req, res){
         res.render('home');
    else{
        everyone.setUser(req.user);
-//	res.end(html);
        res.render('home');
    }
 })
@@ -173,10 +170,10 @@ app.get('/error', function(req, res){
 	res.send('Error');
 })
 
-app.get('/gplus/gplus.png', function(req, res){
-        console.log('gplus');
-	res.redirect('/images/gplus.png');
-})
+//app.get('/gplus/gplus.png', function(req, res){
+//        console.log('gplus');
+	//res.redirect('/images/gplus.png');
+//})
 //app.get('/css/main.js', function(req, res){
 //        console.log('main.js');
 //	res.redirect('/css/main.js');
@@ -209,7 +206,6 @@ app.listen(process.env['app_port'] || 3000, function (){
   everyone.on('leave', function() { 
       message=' is disconnected from chat';
       console.log('Disconnected from server'); 
-      --counter;
       link=this.now.name;
       if(this.now.network=='facebook')
       link='<a target="_blank" href="http://www.facebook.com/'+this.now.username+'">'+this.now.name+'</a>';
@@ -226,7 +222,7 @@ app.listen(process.env['app_port'] || 3000, function (){
       users[this.now.name] = null;
     }
      everyone.count(function (ct) {
-        everyone.now.countUsers(ct);
+        everyone.now.countUsers(get_unique_usernames().length);
      });
      console.log('this.now  = %j',this.now)
      delete this.now;
@@ -245,9 +241,8 @@ app.listen(process.env['app_port'] || 3000, function (){
       cusers[this.user.clientId] = this.now.name;
     }
       console.log('connected to server'); 
-      ++counter;
       everyone.count(function (ct) {
-        everyone.now.countUsers(ct);
+        everyone.now.countUsers(get_unique_usernames().length);
     });
       //Date.now() = mill sec since 1970
       link=this.now.name;
@@ -260,12 +255,7 @@ app.listen(process.env['app_port'] || 3000, function (){
       if(this.now.network=='google+')
       link='<a target="_blank" href="https://plus.google.com/'+this.now.username+'">'+this.now.name+'</a>';
       everyone.now.receiveMessage(link, message,7);
-    var usernames=[];
-    everyone.getUsers(function (users) { 
-    for (var i = 0; i < users.length; i++)
-          usernames.push("<br>"+cusers[users[i]]+"");
-    });
-    everyone.now.receiveUserList(usernames.toString());   
+    everyone.now.receiveUserList(get_unique_usernames().join('<br>').toString());   
   }); 
   //Nowjs
   group.now.distributeMessage = function(message){
@@ -378,5 +368,22 @@ function Vertex(val) {
   this.words = [];
   this.val = val;
 } 
-
-
+function get_unique_usernames() {
+     var usernames=[];
+    everyone.getUsers(function (users) { 
+    for (var i = 0; i < users.length; i++)
+	  usernames.push(cusers[users[i]]);
+	//usernames.push("<br>"+cusers[users[i]]+"");
+    });
+    return sort_unique(usernames);
+}
+function sort_unique(arr) {
+    arr = arr.sort(function (a, b) { return a*1 - b*1; });
+    var ret = [arr[0]];
+    for (var i = 1; i < arr.length; i++) { // start loop at 1 as element 0 can never be a duplicate
+        if (arr[i-1] !== arr[i]) {
+            ret.push(arr[i]);
+        }
+    }
+    return ret;
+}
