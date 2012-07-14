@@ -111,11 +111,6 @@ function addUser (source, sourceUser) {
   return user;
 }
 
-//Connect module Routes
-var routes = function (server) {
-  // Define your routes here
-};
-
 var app = express.createServer(
     express.bodyParser()
   , express.cookieParser()
@@ -127,7 +122,6 @@ app.configure( function () {
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
   app.use(lessMiddleware({
     src      : __dirname + "/public",
     compress : true
