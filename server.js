@@ -6,6 +6,7 @@ var html = require('fs').readFileSync(__dirname+'/helloworld.html');
 var prehtml = require('fs').readFileSync(__dirname+'/helloworld.html');
 var http = require('http');
 var express = require('express');
+//var MongoStore = require('connect-mongo')(express);
 var rest = require('restler');
 var less = require('less');
 var lessMiddleware = require('less-middleware');
@@ -17,6 +18,46 @@ var scripts = [
    'javascripts/easel.js',
    'javascripts/script.js'
 ];
+//Redis
+var redisStore = require('connect-redis')(express);
+function redSess (express, app) {
+  var RedisStore = require('connect-redis')(express)
+    , env = process.env.NODE_ENV || 'dev'
+    , sessionStore
+    ;
+  
+  if (env == 'development')  env = 'dev';
+  redis.host = "redistogo.com";
+  redis.port=9319;
+  redis.user='angarag';
+  redis.pass='saranhas';
+  //var redis = cfg.get('db').redis[env];
+  if (process.env.NODE_ENV == 'production') {
+    sessionStore = new RedisStore({
+        maxAge       : 60000 * 60 * 24 * 28,
+        reapInterval : 60000 * 60 * 24 * 7,
+        host         : redis.host,
+        port         : redis.port,
+        user         : redis.user,
+        pass         : redis.pass
+      });
+    var redisAuth = function() {
+      sessionStore.client.auth(redis.pass);
+    };
+    sessionStore.client.addListener('connected', redisAuth);
+    sessionStore.client.addListener('reconnected', redisAuth);
+    sessionStore.client.on('error', function (err) {
+      if (err) console.error(err);
+    });
+    redisAuth();
+    return sessionStore;
+  } else {
+    return new RedisStore({
+      maxAge: 60000 * 60 * 24 * 28,
+      reapInterval: 60000 *60 * 24 * 7
+    });
+  }
+}
 //Facebook connection
 var everyauth = require('./index');
 everyauth.debug = true;
@@ -25,7 +66,6 @@ everyauth.everymodule
     callback(null, usersById[id]);
   });
 
-//var connect = require('connect');
 var usersById = {};
 var nextUserId = 0;
 var allmsg="";
@@ -114,7 +154,16 @@ function addUser (source, sourceUser) {
 var app = express.createServer(
     express.bodyParser()
   , express.cookieParser()
-  , express.session({ secret: 'htuayreve'})
+  , express.session({
+    store: new redisStore,
+//    store: redSess(express, app), 
+    secret: 'secretkey'
+//    store: new RedisStore,
+//    secret: 'htuayreve',
+//    store: new MongoStore({
+//      db: 'session'
+//    })
+   })
   , everyauth.middleware()
 );
 app.configure( function () {
