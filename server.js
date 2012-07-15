@@ -34,6 +34,7 @@ var redis = require("redis")
   redis.user='angarag';
   redis.pass='saranhas';
   if (process.env.NODE_ENV == 'production') {
+    console.log('production env -> Old');
     sessionStore = new RedisStore({
         maxAge       : 60000 * 60 * 24 * 28,
         reapInterval : 60000 * 60 * 24 * 7,
@@ -53,6 +54,7 @@ var redis = require("redis")
     redisAuth();
     return sessionStore;
   } else {
+    console.log('Not production env -> New');
     return new RedisStore({
       maxAge: 60000 * 60 * 24 * 28,
       reapInterval: 60000 *60 * 24 * 7
@@ -156,15 +158,14 @@ var app = express.createServer(
     express.bodyParser()
   , express.cookieParser()
   , express.session({
-//    store: new redisStore,
+    secret: 'secretkey',
     store: redSess(express, app), 
-    secret: 'secretkey'
 //    store: new RedisStore,
-//    secret: 'htuayreve',
 //    store: new MongoStore({
 //      db: 'session'
 //    })
    })
+  , app.use(app.router)
   , everyauth.middleware()
 );
 app.configure( function () {
@@ -172,7 +173,6 @@ app.configure( function () {
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
   app.use(lessMiddleware({
     src      : __dirname + "/public",
     compress : true
