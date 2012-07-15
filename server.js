@@ -159,13 +159,12 @@ var app = express.createServer(
   , express.cookieParser()
   , express.session({
     secret: 'secretkey',
-    store: redSess(express, app), 
+//    store: redSess(express, app), 
 //    store: new RedisStore,
 //    store: new MongoStore({
 //      db: 'session'
 //    })
    })
-  , app.use(app.router)
   , everyauth.middleware()
 );
 app.configure( function () {
@@ -179,6 +178,7 @@ app.configure( function () {
   }));
   app.use(express.compiler({ src: __dirname + '/public/stylesheets', enable: ['less'] }));
   app.use(express.static(__dirname + '/public'));
+  app.use(app.router);
 });
 //Routings
 app.get('/', function(req, res){
