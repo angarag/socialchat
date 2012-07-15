@@ -27,11 +27,12 @@ function redSess (express, app) {
     ;
   
   if (env == 'development')  env = 'dev';
+  //var redis = cfg.get('db').redis[env];
+var redis = require("redis")
   redis.host = "redistogo.com";
   redis.port=9319;
   redis.user='angarag';
   redis.pass='saranhas';
-  //var redis = cfg.get('db').redis[env];
   if (process.env.NODE_ENV == 'production') {
     sessionStore = new RedisStore({
         maxAge       : 60000 * 60 * 24 * 28,
@@ -155,8 +156,8 @@ var app = express.createServer(
     express.bodyParser()
   , express.cookieParser()
   , express.session({
-    store: new redisStore,
-//    store: redSess(express, app), 
+//    store: new redisStore,
+    store: redSess(express, app), 
     secret: 'secretkey'
 //    store: new RedisStore,
 //    secret: 'htuayreve',
