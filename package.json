@@ -18,7 +18,7 @@
     "restler": "^ 2.0.1",
     "connect": "^3.6.5",
     "connect-redis": "^ 1.4.0",
-    "redis": "^ 0.7.2",
+    "redis": "^0.12.1",
      "less-middleware": "^3.0.0",
     "mime": "^1.2.6",
     "qs": "^6.0.4"
