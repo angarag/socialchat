@@ -12,7 +12,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "oauth": "^0.9.7",
+    "oauth": "^0.10.0",
     "now": "^0.8.1",
     "less": "^3.0.2",
     "restler": "^ 2.0.1",
